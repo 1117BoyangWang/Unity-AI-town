@@ -481,9 +481,20 @@ namespace IceStormSurvival.Systems
     {
         public static ILLMService CreateService()
         {
-            // 这里可以根据配置返回不同的LLM实现
-            // 比如 OpenAI、本地模型、或者模拟服务
-            return new MockLLMService();
+            // 根据配置返回不同的LLM实现
+            var config = Services.ConfigurationManager.Instance;
+            
+            if (config.IsConfigured())
+            {
+                Debug.Log("使用增强版OpenAI服务");
+                return new Services.EnhancedOpenAIService();
+            }
+            else
+            {
+                Debug.LogWarning("OpenAI未配置，使用模拟服务");
+                Debug.LogWarning("要启用真实AI对话，请参考OPENAI_SETUP.md配置API密钥");
+                return new MockLLMService();
+            }
         }
     }
     
